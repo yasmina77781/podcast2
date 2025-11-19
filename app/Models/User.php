@@ -15,8 +15,8 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'email',
-        'password',
-        'role'
+        'password'
+        
     ];
 
     protected $hidden = [
@@ -28,9 +28,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $attributes = [
-        'role' => 'user',
-    ];
+    // protected $attributes = [
+    //     'role' => 'user',
+    // ];
 
     public function setPasswordAttribute($value)
     {

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use App\Models\User;
+
 
 class UserController extends Controller
 {
@@ -12,9 +14,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->role !== 'admin') {
-            return ['message' => 'Non autorisé. Accès réservé aux administrateurs.'];
-        }
+        if (Gate::denies('isAdmin')) {
+    return ['message' => 'Non autorisé. Accès réservé aux administrateurs.'];
+}
         
         $users = User::with('podcasts')->get();
         
@@ -26,16 +28,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        if (auth()->user()->role !== 'admin') {
-            return ['message' => 'Non autorisé. Accès réservé aux administrateurs.'];
-        }
+       if (Gate::denies('isAdmin')) {
+    return ['message' => 'Non autorisé. Accès réservé aux administrateurs.'];
+}
         
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
-            'role' => 'required|in:user,animateur,admin'
+            
         ]);
         
         $user = User::create($validated);
@@ -51,9 +53,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        if (auth()->user()->role !== 'admin') {
-            return ['message' => 'Non autorisé. Accès réservé aux administrateurs.'];
-        }
+       if (Gate::denies('isAdmin')) {
+    return ['message' => 'Non autorisé. Accès réservé aux administrateurs.'];
+}
         
         $user = User::with('podcasts')->find($id);
         
@@ -69,9 +71,9 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (auth()->user()->role !== 'admin') {
-            return ['message' => 'Non autorisé. Accès réservé aux administrateurs.'];
-        }
+       if (Gate::denies('isAdmin')) {
+    return ['message' => 'Non autorisé. Accès réservé aux administrateurs.'];
+}
         
         $user = User::find($id);
         
@@ -100,9 +102,9 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        if (auth()->user()->role !== 'admin') {
-            return ['message' => 'Non autorisé. Accès réservé aux administrateurs.'];
-        }
+        if (Gate::denies('isAdmin')) {
+    return ['message' => 'Non autorisé. Accès réservé aux administrateurs.'];
+}
         
         $user = User::find($id);
         
@@ -111,9 +113,9 @@ class UserController extends Controller
         }
         
         // Empêcher l'admin de se supprimer lui-même
-        if ($user->id === auth()->user()->id) {
-            return ['message' => 'Vous ne pouvez pas vous supprimer vous-même.'];
-        }
+        if (Gate::denies('isAdmin')) {
+    return ['message' => 'Non autorisé. Accès réservé aux administrateurs.'];
+}
         
         $user->delete();
         

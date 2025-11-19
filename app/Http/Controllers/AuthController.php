@@ -40,7 +40,7 @@ class AuthController extends Controller
                 'last_name' => $request->last_name,
                 'email' => $request->email,
                 'password' => $request->password,
-                'role' => 'user',
+                
             ]);
         }
 
